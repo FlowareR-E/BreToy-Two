@@ -40,9 +40,27 @@ public class SpotifyService {
                 .block();
     }
 
+    public String getArtistTopTracks(String id, String accessToken) {
+        return webClient.get()
+                .uri("/artists/{id}/top-tracks", id)
+                .headers(h -> h.setBearerAuth(accessToken))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
     public String getAlbumById(String id, String accessToken) {
         return webClient.get()
                 .uri("/albums/{id}", id)
+                .headers(h -> h.setBearerAuth(accessToken))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    public String getArtistAlbums(String id, String accessToken) {
+        return webClient.get()
+                .uri("/artists/{id}/albums", id)
                 .headers(h -> h.setBearerAuth(accessToken))
                 .retrieve()
                 .bodyToMono(String.class)

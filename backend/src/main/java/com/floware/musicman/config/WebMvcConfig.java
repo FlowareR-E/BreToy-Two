@@ -15,11 +15,9 @@ public class WebMvcConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:8080")
+                        .allowedOrigins("*")
                         .allowedMethods("*")
-                        .allowCredentials(true)
-                        .exposedHeaders(HttpHeaders.SET_COOKIE)
-                        .exposedHeaders("Set-Cookie");
+                        .allowCredentials(false);
             }
         };
     }

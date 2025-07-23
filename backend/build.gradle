@@ -39,3 +39,12 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootRun {
+	systemProperties System.properties
+	environment SPRING_PROFILES_ACTIVE: 'dev'
+
+	systemProperty 'SPOTIFY_CLIENT_ID', project.findProperty('SPOTIFY_CLIENT_ID') ?: ''
+	systemProperty 'SPOTIFY_CLIENT_SECRET', project.findProperty('SPOTIFY_CLIENT_SECRET') ?: ''
+	systemProperty 'SPOTIFY_REDIRECT_URI', project.findProperty('SPOTIFY_REDIRECT_URI') ?: ''
+}

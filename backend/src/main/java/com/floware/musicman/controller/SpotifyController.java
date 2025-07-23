@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/spotify")
 @RequiredArgsConstructor
+@CrossOrigin
 public class SpotifyController {
 
     private final SpotifyService spotifyService;
@@ -53,6 +54,29 @@ public class SpotifyController {
             String spotifyId = principal.getAttribute("id");
             String accessToken = userSessionService.getAccessToken(spotifyId);
             return ResponseEntity.ok(spotifyService.getArtistById(id, accessToken));
+        } catch (Exception e) {
+            return handleErrorResponse(e);
+        }
+    }
+
+    @GetMapping("/artists/{id}/top-tracks")
+    public ResponseEntity<String> getArtistTopTracks(@PathVariable String id,
+                                            @AuthenticationPrincipal OAuth2User principal) {
+        try {
+            String spotifyId = principal.getAttribute("id");
+            String accessToken = userSessionService.getAccessToken(spotifyId);
+            return ResponseEntity.ok(spotifyService.getArtistTopTracks(id, accessToken));
+        } catch (Exception e) {
+            return handleErrorResponse(e);
+        }
+    }
+    @GetMapping("/artists/{id}/albums")
+    public ResponseEntity<String> getArtistAlbums(@PathVariable String id,
+                                            @AuthenticationPrincipal OAuth2User principal) {
+        try {
+            String spotifyId = principal.getAttribute("id");
+            String accessToken = userSessionService.getAccessToken(spotifyId);
+            return ResponseEntity.ok(spotifyService.getArtistAlbums(id, accessToken));
         } catch (Exception e) {
             return handleErrorResponse(e);
         }
