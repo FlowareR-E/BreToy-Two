@@ -73,7 +73,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSpotifyId(data.userId);
         return true;
       }
-      // If session verification fails, perform logout
       await logout();
       return false;
     } catch (error) {
@@ -98,13 +97,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, [verifySession]);
 
-  // Optional: Add periodic session verification
   useEffect(() => {
     const interval = setInterval(() => {
       if (spotifyId) {
         verifySession();
       }
-    }, 5 * 60 * 1000); // Check every 5 minutes
+    }, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [spotifyId, verifySession]);

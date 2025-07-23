@@ -5,10 +5,18 @@ services:
       - ./backend/.env
     ports:
       - "9090:9090"
-      
+    networks:
+      - musicman
+
   frontend:
     build: ./frontend
     ports:
       - "8080:8080"
     depends_on:
       - backend
+    networks:
+      - musicman
+
+networks:
+  musicman:
+    driver: bridge

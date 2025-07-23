@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler())
                         .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("http://127.0.0.1:8080/login");
+                            response.sendRedirect("http://127.0.0.1:8080/login?error");
                         })
                 )
                 .logout(logout -> logout

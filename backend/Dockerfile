@@ -16,6 +16,9 @@ RUN gradle build --no-daemon \
     -PSPOTIFY_REDIRECT_URI=$SPOTIFY_REDIRECT_URI
 
 FROM eclipse-temurin:21-jre-alpine
+
+RUN apk update && apk add --no-cache ca-certificates && update-ca-certificates
+
 WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
