@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Typography, Box, CircularProgress, Paper, Avatar, Button } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Paper, Button, Divider } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 import type { ArtistDetails } from '../types/spotify';
+import ArtistHeader from '../components/ArtistHeader';
+import TopTracks from '../components/TopTracks';
+import Albums from '../components/Albums';
+import spotifyApi from '../api/spotifyApi';
+import BackButton from '../components/BackButton';
 
 function ArtistPage() {
   const { id } = useParams<{ id: string }>();
   const { isAuthenticated, logout } = useAuth();
   const [artist, setArtist] = useState<ArtistDetails | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,19 +23,13 @@ function ArtistPage() {
     const fetchArtist = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://127.0.0.1:9090/spotify/artists/${id}`, {
-          credentials: 'include'
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch artist details');
-        }
-        const data = await response.json();
-        console.log(data);
+        setError(null);
+        const data = await spotifyApi.getArtist(id);
         setArtist(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error('Error fetching artist:', err);
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        setLoading(false);
+
       } finally {
         setLoading(false);
       }
@@ -44,8 +44,18 @@ function ArtistPage() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="80vh"
+        flexDirection="column"
+        gap={2}
+      >
+        <CircularProgress size={60} />
+        <Typography variant="h6" color="text.secondary">
+          Loading artist details...
+        </Typography>
       </Box>
     );
   }
@@ -53,11 +63,16 @@ function ArtistPage() {
   if (error) {
     return (
       <Container maxWidth="md">
-        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-          <Typography color="error" variant="h6" gutterBottom>
+        <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: 'center' }}>
+          <Typography color="error" variant="h5" gutterBottom>
             Error loading artist details
           </Typography>
-          <Typography>{error}</Typography>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+            {error}
+          </Typography>
+          <Button variant="contained" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
         </Paper>
       </Container>
     );
@@ -65,10 +80,13 @@ function ArtistPage() {
 
   if (!artist) {
     return (
-      <Container maxWidth="md">
-        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 4, mt: 4, textAlign: 'center' }}>
+          <Typography variant="h5" gutterBottom>
             Artist not found
+          </Typography>
+          <Typography variant="body1">
+            The requested artist could not be found.
           </Typography>
         </Paper>
       </Container>
@@ -76,42 +94,29 @@ function ArtistPage() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 10 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-        <Avatar
-          src={artist.images[0]?.url }
-          alt={artist.name}
-          sx={{
-            width: 120,
-            height: 120,
-            mr: 4,
-            boxShadow: 8
-          }}
-        />
-        <Box>
-          <Typography variant="h3" component="h1" gutterBottom>
-            {artist.name}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            {artist.followers.total.toLocaleString()} followers
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-            {artist.genres != null && artist.genres.map((genre) => (
-              <Paper key={genre} elevation={0} sx={{ px: 1.5, py: 0.5, borderRadius: 4, bgcolor: 'primary.light' }}>
-                <Typography variant="body2">{genre}</Typography>
-              </Paper>
-            ))}
-          </Box>
-        </Box>
-      </Box>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <BackButton/>
+      <ArtistHeader artist={artist} />
 
+      <TopTracks artistId={id!} />
 
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+      <Albums artistId={id!} />
+
+      <Divider sx={{ my: 4 }} />
+
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="outlined"
           color="error"
           onClick={logout}
-          sx={{ mt: 2 }}
+          size="large"
+          sx={{
+            minWidth: 120,
+            '&:hover': {
+              transform: 'translateY(-1px)',
+              boxShadow: 2
+            }
+          }}
         >
           Logout
         </Button>

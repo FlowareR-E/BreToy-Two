@@ -1,4 +1,4 @@
-import { Typography, Box, CircularProgress, Card, CardContent, Avatar, Grid, Chip, alpha } from '@mui/material';
+import { Typography, Box, CircularProgress, Card, CardContent, Avatar, Grid, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Artist } from '../types/spotify';
 
@@ -60,7 +60,7 @@ function TopArtists({ artists, loading, error }: TopArtistsProps) {
               cursor: 'pointer',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               height: '100%',
-              background: '#fafafa',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, .7) 100%, rgba(15, 77, 15, .15) 100%)',
               backdropFilter: 'blur(10px)',
               border: '1px solid',
               borderColor: '#e0e0e0',
@@ -85,19 +85,6 @@ function TopArtists({ artists, loading, error }: TopArtistsProps) {
             onClick={() => handleArtistClick(artist.id)}
           >
             <CardContent sx={{ p: 2.5, textAlign: 'center', position: 'relative' }}>
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: 60,
-                  height: 60,
-                  background: 'rgba(25, 118, 210, 0.1)',
-                  borderRadius: '50%',
-                  transform: 'translate(30px, -30px)'
-                }}
-              />
-              
               <Box sx={{ position: 'relative', display: 'inline-block', mb: 2 }}>
                 <Avatar
                   src={artist.imageUrl}
@@ -132,10 +119,10 @@ function TopArtists({ artists, loading, error }: TopArtistsProps) {
                   }}
                 />
               </Box>
-              
-              <Typography 
-                variant="h6" 
-                sx={{ 
+
+              <Typography
+                variant="h6"
+                sx={{
                   fontWeight: 700,
                   mb: 0.5,
                   fontSize: { xs: '1rem', sm: '1.25rem' },
@@ -145,11 +132,11 @@ function TopArtists({ artists, loading, error }: TopArtistsProps) {
               >
                 {artist.name}
               </Typography>
-              
-              <Typography 
-                variant="body2" 
-                color="text.secondary" 
-                sx={{ 
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
                   mb: 1.5,
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   fontWeight: 500
@@ -157,7 +144,7 @@ function TopArtists({ artists, loading, error }: TopArtistsProps) {
               >
                 {artist.genre.charAt(0).toUpperCase() + artist.genre.slice(1)}
               </Typography>
-              
+
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Chip
                   label={`${artist.popularity}% popularity`}

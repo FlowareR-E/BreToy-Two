@@ -1,18 +1,33 @@
-
 import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { Artist, SearchResult } from '../types/spotify';
 import SearchBar from '../components/SearchBar';
 import TopArtists from '../components/TopArtists';
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Container, Typography, Box, Button, CircularProgress } from '@mui/material';
 import SearchResults from '../components/SearchResults';
+import spotifyApi from '../api/spotifyApi';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 function DashboardPage() {
+  const searchResultsRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated, spotifyId, logout } = useAuth();
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -20,18 +35,13 @@ function DashboardPage() {
     const fetchTopArtists = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://127.0.0.1:9090/spotify/me/top/artists', {
-          credentials: 'include'
-        });
+        setError(null);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch top artists');
-        }
-        const data = await response.json();
+        const data = await spotifyApi.getTopArtists();
         setArtists(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error('Error fetching top artists:', err);
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -40,45 +50,46 @@ function DashboardPage() {
     fetchTopArtists();
   }, [isAuthenticated]);
 
-const handleSearch = async (query: string) => {
-  try {
-    setLoading(true);
-    setError(null);
-    
-    const response = await fetch(`http://127.0.0.1:9090/spotify/search?query=${encodeURIComponent(query)}&type=album,artist,track`, {
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      throw new Error('Search failed');
+  useEffect(() => {
+    if (searchQuery) {
+      handleSearch(searchQuery);
     }
+  }, []);
 
-    const data = await response.json();
-    console.log('Search results:', data);
-    setSearchResults(data);
-    
-  } catch (err) {
-    setError(err instanceof Error ? err.message : 'Search failed');
-    console.error('Search error:', err);
-  } finally {
-    setLoading(false);
-  }
-};
+const handleSearch = async (query: string) => {
+    navigate(`/dashboard?search=${encodeURIComponent(query)}`);
+    try {
+      setLoading(true);
+      const data = await spotifyApi.search(query);
+      setSearchResults(data);
+      
+      setTimeout(() => {
+        searchResultsRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Search failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isAuthenticated) {
     return null;
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4, justifyContent: 'center', alignItems: 'center', maxWidth:1440, mx: 'auto' }}>
+    <Container maxWidth="xl" sx={{ py: 4, justifyContent: 'center', alignItems: 'center', maxWidth: 1440, mx: 'auto' }}>
       <SearchBar onSearch={handleSearch} />
 
-    <Box 
-        sx={{ 
-          mb: 6, 
-          mt: 8, 
+      <Box
+        sx={{
+          mb: 6,
+          mt: 8,
           textAlign: 'center',
-          background: 'linear-gradient(135deg, #0F4D0F 0%,#008000 100%)',
+          background: (theme) => theme.palette.primary.light,
           borderRadius: 4,
           p: 3,
           color: 'white',
@@ -96,9 +107,9 @@ const handleSearch = async (query: string) => {
           }
         }}
       >
-        <Typography 
-          variant="h2" 
-          component="h1" 
+        <Typography
+          variant="h2"
+          component="h1"
           gutterBottom
           sx={{
             fontWeight: 700,
@@ -109,8 +120,8 @@ const handleSearch = async (query: string) => {
         >
           Welcome back, {spotifyId}! 🎵
         </Typography>
-        <Typography 
-          variant="h5" 
+        <Typography
+          variant="h5"
           sx={{
             fontWeight: 400,
             opacity: 0.95,
@@ -124,16 +135,20 @@ const handleSearch = async (query: string) => {
       </Box>
 
       <TopArtists artists={artists} loading={loading} error={error} />
-      {searchResults && <SearchResults results={searchResults} loading={loading} error={error} />}
-
+      {searchResults && (
+        <div ref={searchResultsRef}>
+          <SearchResults results={searchResults} loading={loading} error={error} />
+        </div>)}
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           variant="outlined"
+          disabled={loading || isLoggingOut}
+          startIcon={isLoggingOut ? <CircularProgress size={20} /> : null}
           color="error"
-          onClick={logout}
+          onClick={handleLogout}
           sx={{ mt: 2 }}
         >
-          Logout
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
         </Button>
       </Box>
     </Container>

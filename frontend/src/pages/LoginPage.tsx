@@ -6,7 +6,6 @@ import { keyframes } from '@emotion/react';
 import logo from '../assets/musicman-logo.png';
 import AuthLoader from '../components/AuthLoader';
 
-// Animation for subtle pulse effect
 const pulse = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1.03); }
@@ -39,7 +38,7 @@ const LoginPage = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #191414 0%, #1DB954 50%, #191414 100%)',
+        background: '#191414e6',
         position: 'relative',
         overflow: 'hidden',
         '&::before': {
@@ -49,7 +48,6 @@ const LoginPage = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'radial-gradient(circle at center, rgba(29, 185, 84, 0.1) 0%, transparent 70%)',
           zIndex: 0,
         }
       }}
@@ -65,7 +63,7 @@ const LoginPage = () => {
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: 4,
-            background: '#191414e6',
+            background: (theme) => theme.palette.primary.light,
             backdropFilter: 'blur(8px)',
             border: '1px solid rgba(29, 185, 84, 0.3)',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
@@ -100,7 +98,7 @@ const LoginPage = () => {
               fontFamily: 'Montserrat, sans-serif',
               textAlign: 'center',
               mb: 3,
-              color: '#fff',
+              color: 'rgba(25,25,25,1)',
               textShadow: '0 2px 4px rgba(0,0,0,0.3)',
               background: 'linear-gradient(to right, #1DB954, #fff)',
               WebkitBackgroundClip: 'text',
@@ -114,7 +112,7 @@ const LoginPage = () => {
             align="center"
             sx={{
               mb: 4,
-              color: 'rgba(255,255,255,0.8)',
+              color: 'rgba(25,25,25,.85)',
               fontSize: '1.1rem',
               lineHeight: 1.6
             }}
@@ -134,13 +132,13 @@ const LoginPage = () => {
                 color: '#000000cc',
                 py: 1.5,
                 borderRadius: 2,
-                background: 'linear-gradient(to right, #1DB954, #1ED760)',
+                background: 'rgba(255, 255, 255, 0.4)',
                 boxShadow: '0 4px 15px rgba(29, 185, 84, 0.4)',
                 transition: 'all 0.3s ease',
                 '&:hover': {
                   transform: 'translateY(-2px)',
                   boxShadow: '0 6px 20px rgba(29, 185, 84, 0.6)',
-                  background: 'linear-gradient(to right, #1DB954, #1DB954)',
+                  background: (theme) => theme.palette.primary.main,
                 }
               }}
             >
@@ -152,7 +150,7 @@ const LoginPage = () => {
             display="block"
             sx={{
               mt: 3,
-              color: 'rgba(255,255,255,0.5)',
+              color: 'rgba(20,20,20,.75)',
               textAlign: 'center',
               fontSize: '0.8rem'
             }}

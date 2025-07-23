@@ -2,6 +2,7 @@ package com.floware.musicman.config;
 
 import com.floware.musicman.service.UserSessionService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -58,8 +59,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "spotify_session")
                         .addLogoutHandler((request, response, authentication) -> {
-                            if (authentication != null && authentication instanceof OAuth2AuthenticationToken) {
-                                OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+                            if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
                                 clientService.removeAuthorizedClient(
                                         oauthToken.getAuthorizedClientRegistrationId(),
                                         oauthToken.getName()
@@ -69,7 +69,7 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable());
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -97,17 +97,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", HttpHeaders.AUTHORIZATION));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
     private AuthenticationSuccessHandler oauth2SuccessHandler() {
         return (request, response, authentication) -> {
             OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;

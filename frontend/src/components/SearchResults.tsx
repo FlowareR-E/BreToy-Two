@@ -75,7 +75,7 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
     return (
         <Box sx={{ mt: 10 }}>
             {/* Type Selector UI */}
-            <Box sx={{ mb: 1, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ mb: 1, display: 'flex', justifyContent: 'center', }}>
                 <ToggleButtonGroup
                     value={displayTypes}
                     onChange={handleTypeChange}
@@ -159,15 +159,17 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                             />
                             Artists
                         </Typography>
-                        <Grid container spacing={3}>
-                            {results.artists.items.slice(0, 6).map((artist) => (
+                        <Grid container spacing={2}>
+                            {results.artists.items.slice(0, 8).map((artist) => (
                                 <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={artist.id}>
                                     <Card
                                         component={Link}
                                         to={`/artists/${artist.id}`}
                                         sx={{
+                                            background: 'linear-gradient(135deg, rgba(255, 255, 255, .7) 100%, rgba(15, 77, 15, .15) 100%)',
                                             height: '100%',
                                             display: 'flex',
+                                            borderRadius: 3,
                                             flexDirection: 'column',
                                             textDecoration: 'none',
                                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -233,14 +235,19 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                             />
                             Albums
                         </Typography>
-                        <Grid container spacing={3}>
-                            {results.albums.items.slice(0, 6).map((album) => (
-                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={album.id}>
+                        <Grid container spacing={2}>
+                            {results.albums.items.slice(0, 10).map((album) => (
+                                <Grid size={{ xs: 14, sm: 4, md: 3, lg: 2 }} key={album.id}>
                                     <Card
+                                        component={Link}
+                                        to={`/albums/${album.id}`}
                                         sx={{
+                                            background: 'linear-gradient(135deg, rgba(255, 255, 255, .7) 100%, rgba(15, 77, 15, .15) 100%)',
                                             height: '100%',
                                             display: 'flex',
+                                            borderRadius: 2,
                                             flexDirection: 'column',
+                                            textDecoration: 'none',
                                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                             '&:hover': {
                                                 transform: 'translateY(-5px)',
@@ -302,14 +309,18 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                             />
                             Tracks
                         </Typography>
-                        <Grid container spacing={2}>
-                            {results.tracks.items.slice(0, 6).map((track) => (
-                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={track.id}>
+                        <Grid container spacing={4}>
+                            {results.tracks.items.slice(0, 10).map((track) => (
+                                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={track.id} >
                                     <Card
                                         sx={{
+                                            background: 'linear-gradient(135deg, rgba(255, 255, 255, .7) 100%, rgba(15, 77, 15, .15) 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            p: 2,
+                                            p: 1,
+                                            width: '100%',
+                                            borderRadius: 1,
+                                            minHeight: 70, 
                                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                             '&:hover': {
                                                 transform: 'translateY(-2px)',
@@ -321,13 +332,33 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                                             variant="square"
                                             src={track.album.images[0]?.url}
                                             alt={track.name}
-                                            sx={{ width: 60, height: 60, mr: 2 }}
+                                            sx={{ width: 60, height: 60, mr: 2, flexShrink: 0 }}
                                         />
-                                        <Box sx={{ flexGrow: 1 }}>
-                                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                        <Box sx={{
+                                            flexGrow: 1,
+                                            minWidth: 0, 
+                                            overflow: 'hidden'
+                                        }}>
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}
+                                            >
                                                 {track.name}
                                             </Typography>
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}
+                                            >
                                                 {track.artists.map(a => a.name).join(', ')} • {track.album.name}
                                             </Typography>
                                         </Box>
@@ -337,7 +368,9 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                                             sx={{
                                                 bgcolor: 'rgba(29, 185, 84, 0.1)',
                                                 color: 'primary.dark',
-                                                fontWeight: 500
+                                                fontWeight: 500,
+                                                flexShrink: 0,
+                                                ml: 1
                                             }}
                                         />
                                     </Card>

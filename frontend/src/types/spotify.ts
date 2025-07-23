@@ -41,7 +41,38 @@ export interface Album {
   release_date: string;
 }
 
+export interface AlbumDetails {
+  album_type: 'album' | 'single' | 'compilation';
+  artists: Artist[];
+  available_markets: string[];
+  copyrights: Copyright[];
+  external_urls: ExternalUrls;
+  genres: string[];
+  href: string;
+  id: string;
+  images: Image[];
+  label: string;
+  name: string;
+  popularity: number;
+  release_date: string;
+  release_date_precision: 'year' | 'month' | 'day';
+  total_tracks: number;
+  tracks: {
+    href: string;
+    items: Track[];
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+
+  };
+  type: 'album';
+  uri: string;
+}
+
 export interface Track {
+  explicit: boolean;
   id: string;
   name: string;
   artists: { name: string }[];
@@ -49,7 +80,11 @@ export interface Track {
     name: string;
     images: Image[];
   };
+  external_urls: {
+    spotify: string;
+  };
   duration_ms: number;
+  popularity: number;
 }
 
 export interface SearchResult {
@@ -62,4 +97,8 @@ export interface SearchResult {
   tracks?: {
     items: Track[];
   }
+}
+export interface Copyright {
+  text: string;
+  type: string;
 }
