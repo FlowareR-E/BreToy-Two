@@ -56,13 +56,17 @@ function DashboardPage() {
     }
   }, []);
 
-const handleSearch = async (query: string) => {
+  const handleSearch = async (query: string) => {
+    if (query.trim() === '') {
+      setSearchResults(null);
+      return;
+    }
     navigate(`/dashboard?search=${encodeURIComponent(query)}`);
     try {
       setLoading(true);
       const data = await spotifyApi.search(query);
       setSearchResults(data);
-      
+
       setTimeout(() => {
         searchResultsRef.current?.scrollIntoView({
           behavior: 'smooth',

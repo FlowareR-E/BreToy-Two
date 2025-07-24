@@ -118,7 +118,7 @@ function AlbumDetails() {
 
     return (
         <Fade in timeout={800}>
-            <Box sx={{ mt: 2, mb: 6, width: 1400 }}>
+            <Box sx={{ mt: 2, mb: 6, maxWidth: 1280, width: '100%', mx: 'auto', px: 2 }}>
                 <BackButton />
                 {/* Album Header */}
                 <Paper 

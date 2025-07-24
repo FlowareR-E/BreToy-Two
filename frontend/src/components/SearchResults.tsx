@@ -24,7 +24,7 @@ interface SearchResultsProps {
 type ResultType = 'artists' | 'albums' | 'tracks';
 
 function SearchResults({ results, loading, error }: SearchResultsProps) {
-    const [displayTypes, setDisplayTypes] = useState<ResultType[]>(['tracks']);
+    const [displayTypes, setDisplayTypes] = useState<ResultType[]>(['tracks', 'albums', 'artists']);
 
     const handleTypeChange = (
         _event: React.MouseEvent<HTMLElement>,
@@ -313,14 +313,16 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                             {results.tracks.items.slice(0, 10).map((track) => (
                                 <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={track.id} >
                                     <Card
+                                        onClick={() => window.open(track.external_urls.spotify, '_blank')}
                                         sx={{
                                             background: 'linear-gradient(135deg, rgba(255, 255, 255, .7) 100%, rgba(15, 77, 15, .15) 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             p: 1,
+                                            cursor: 'pointer',
                                             width: '100%',
                                             borderRadius: 1,
-                                            minHeight: 70, 
+                                            minHeight: 70,
                                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                                             '&:hover': {
                                                 transform: 'translateY(-2px)',
@@ -336,7 +338,7 @@ function SearchResults({ results, loading, error }: SearchResultsProps) {
                                         />
                                         <Box sx={{
                                             flexGrow: 1,
-                                            minWidth: 0, 
+                                            minWidth: 0,
                                             overflow: 'hidden'
                                         }}>
                                             <Typography
