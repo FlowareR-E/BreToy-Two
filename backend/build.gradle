@@ -24,6 +24,10 @@ repositories {
 }
 
 dependencies {
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.mockito:mockito-junit-jupiter")
+
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -47,4 +51,7 @@ bootRun {
 	systemProperty 'SPOTIFY_CLIENT_ID', project.findProperty('SPOTIFY_CLIENT_ID') ?: ''
 	systemProperty 'SPOTIFY_CLIENT_SECRET', project.findProperty('SPOTIFY_CLIENT_SECRET') ?: ''
 	systemProperty 'SPOTIFY_REDIRECT_URI', project.findProperty('SPOTIFY_REDIRECT_URI') ?: ''
+}
+test {
+	useJUnitPlatform()
 }
